@@ -3,7 +3,7 @@
 #include "cstdlib"
 #include "Sprites.h"
 #include "Backs.h"
-#include "mylib.h"
+#include "2d-lib.h"
 ;
 
 
@@ -85,7 +85,7 @@ restart:
 //		cactus1.col--;
 //		cactus2.col--;
 		
-		Sleep(4);
+		Sleep(1);
     	}
 
 	dino.row = 31;

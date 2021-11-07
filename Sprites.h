@@ -2,7 +2,7 @@
 #define sprite_height 16
 #define sprite_width 16
 
-extern bool dino_bmp[3][sprite_height * sprite_width] = {
+ bool dino_bmp[3][sprite_height * sprite_width] = {
 	{
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 	0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,
@@ -61,7 +61,7 @@ extern bool dino_bmp[3][sprite_height * sprite_width] = {
 
 
 
-extern bool enemy_bmp[sprite_height * sprite_width] = {
+ bool enemy_bmp[sprite_height * sprite_width] = {
 	0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,
 	0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,
 	0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,
