@@ -1,9 +1,12 @@
-﻿#include "conio.h"
+﻿#include <conio.h>
+#ifdef WIN32
 #include <Windows.h>
-#include "cstdlib"
-#include "Sprites.h"
-#include "Backs.h"
-#include "2d-lib.h"
+#else
+#include <unistd.h>
+#endif
+#include <Sprites.h>
+#include <Backs.h>
+#include <2d-lib.h>
 ;
 
 
@@ -62,11 +65,17 @@ restart:
 		
 
 		display();
-
+		#ifdef WIN32
 		if (_kbhit()) {
 			_getch();
 			button = true;
 		}
+		#else
+		if (kbhit()) {
+			getch();
+			button = true;
+		}
+		#endif
 		jump_handler(dino, int(button));
 		button = false;
 
@@ -84,8 +93,11 @@ restart:
 		cactus2.col--;
 //		cactus1.col--;
 //		cactus2.col--;
-		
+		#ifdef WIN32
 		Sleep(1);
+		#else
+		usleep(2*1000);
+		#endif
     	}
 
 	dino.row = 31;

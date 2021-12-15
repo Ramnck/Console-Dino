@@ -1,7 +1,7 @@
 CC=g++
-CFLAGS=-O3 -s -g0
+SRCS=$(shell find . -name "*.cpp")
+CFLAGS=-O3 -s -g0 -I inc
 all: main
 
 main:
-	$(CC) $(CFLAGS) main.cpp 2d-lib.cpp -o start_game
-
+	$(CC) $(CFLAGS) $(SRCS) -o start

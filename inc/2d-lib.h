@@ -1,5 +1,6 @@
 #pragma once
 ;
+#include <cstdlib>
 
 #define UP true
 #define DOWN false
@@ -17,7 +18,7 @@
 #define SKY_ROW 0
 
 #define st(a) i*a
-#define random rand() % 64
+#define random (rand() % 64)
 
 enum state { jump = 2, run1 = 0, run2 = 1 };
 
