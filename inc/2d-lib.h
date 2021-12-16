@@ -1,6 +1,13 @@
 #pragma once
 ;
+#include <iostream>
 #include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cmath>
+#include <ctime>
+#include <unistd.h>
+
 
 #define UP true
 #define DOWN false
@@ -27,31 +34,30 @@ class Character
 public:
 	int col;
 	int row;
-	bool* bmp;
+	char* bmp;
 	state cond;
 
 	void print();
+	Character &  clear();
 	bool check_hit(Character &enemy);
 };
 
 class Back 
 {
 public:
-	bool* bmp;
+	char* bmp;
 	int row;
-	void offset();
+	Back & offset();
 	void print();
 };
 
 void jump_handler(Character &dino, int keylog);
 
-void optim();
+void screen_init();
 
 void display();
 
-void pixel(int col, int row, bool colour);
-
-void clear();
+void pixel(int col, int row, char colour);
 
 void printScore(int &score);
 
