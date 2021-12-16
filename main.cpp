@@ -10,16 +10,6 @@
 ;
 
 
-
-//void display_stm() {
-//	for (int i = 0; i < HEIGHT; i++) {
-//		for (int j = 0; j < WIDTH; j++) {
-//			oled.print << (char)((int)buffer[j][i] * 219);
-//		}
-//	}
-//}
-
-
 int main() {
 //restart:
 	optim();
