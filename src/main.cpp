@@ -15,12 +15,26 @@
 
 int main(int argc, char* argv[]) {
 //restart:
+	extern char* clear_console;
 	screen_init();
 	#ifdef FPS
+	int _s = 0;
 	double FRQ = 1.0/FPS;
-	if (argc > 2) {
-		std::string flag = argv[1], num = argv[2];
-		// printf("%s\n%s\n", argv[1], argv[2]);
+	if (argc > 1) {
+		std::string flag = argv[1], num;
+		if (argc > 2) 
+			num = argv[2];
+		if (flag == "-h" || flag == "--help") {
+			printf("Usage: %s [-h | --help] [-s to print score] [-f | --fps <FPS> (default = 30)] ", argv[0]);
+			exit(1);
+		}
+		if (flag == "-s") {
+			_s = 1;
+			if (argc > 2) {
+				flag = argv[2];
+				num = argv[3];
+			}
+		}
 		if (flag == "-f" || flag == "-fps")
 			FRQ = 1.0/double(std::stoi(num.c_str()));
 		// printf("%f\n", FRQ);
@@ -47,7 +61,7 @@ int main(int argc, char* argv[]) {
 	// printf("%f\n\n", FRQ);
 	// getch();
 restart:
-	// int score = 0;
+	int score = _s;
 	while (!(dino.check_hit(cactus1) || dino.check_hit(cactus2))) {
 
 		#ifdef FPS
@@ -66,8 +80,9 @@ restart:
 
 		if (cactus1.col < -IMG_W + 1) cactus1.col = 127 + random;
 		if (cactus2.col < -IMG_W + 1) cactus2.col = 127 + random;
-
-		// printScore(score);
+		
+		if (score)
+			printScore(score);
 
 		if (tick % 3 == 0) 
 			clouds.offset().print();
@@ -93,9 +108,6 @@ restart:
 		jump_handler(dino.clear(), button);
 		button = 0;
 
-		// if (!(dino.check_hit(&cactus1)) || dino.check_hit(&cactus2))
-			// break;
-
 		cactus1.clear().col--;
 		cactus2.clear().col--;
 
@@ -111,5 +123,13 @@ restart:
 	cactus2.col = 127 + random + 64;
 	jump_handler(dino, RESET);
 	tick = 1;
-	// goto restart;
-	}
+	#ifdef WIN32
+	system("cls");
+	#else
+	system("clear")
+	#endif
+	printf("Haha you losed (Click any key to continue)\nCTRL+C to stop\n");
+	_getch();
+	goto restart;
+	return 0;
+}

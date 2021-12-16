@@ -15,6 +15,8 @@ char clear_console[] = "clear";
 void screen_init() {
 	std::ios::sync_with_stdio(false);
 	setvbuf(stdout, NULL, _IONBF, 0);
+	setvbuf(stderr, NULL, _IONBF, 0);
+	setvbuf(stdin, NULL, _IONBF, 0);
 	for (int i = 0; i < HEIGHT; i++) {
 		buffer[i][128] = '\0';
 		memset(buffer[i], ' ', WIDTH);
@@ -57,16 +59,15 @@ void jump_handler(Character &dino, int keylog) {
 	dino.row = std::max(std::min((int)round(0.037 * (tick-31) * (tick-31) - 1.5), 31), 2);
 	}
 
-/*
+// /*
 void printScore(int &score) {
-	static bool cond = false;
-	sprintf(buffer + WIDTH * 17 - 10, "%010d", score);
-	buffer[WIDTH * 17] = ' ';
-	// if (cond) 
-		// score++;
-	// cond = !cond;
+	char tick = 0;
+	sprintf(buffer[17] - 10, "%5d", score);
+	// buffer[WIDTH * 17] = ' ';
+	// if (!(tick = (++tick) % 3)) 
+		score++;
 }
-*/
+// */
 
 void Character::print() {
 	int l_offset = 0;
