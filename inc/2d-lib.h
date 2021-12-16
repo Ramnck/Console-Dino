@@ -1,6 +1,13 @@
 #pragma once
 ;
+#include <iostream>
 #include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cmath>
+#include <ctime>
+#include <unistd.h>
+#include <conio.h>
 
 #define UP true
 #define DOWN false
@@ -45,13 +52,11 @@ public:
 
 void jump_handler(Character &dino, int keylog);
 
-void optim();
+void screen_init();
 
 void display();
 
 void pixel(int col, int row, bool colour);
-
-void clear();
 
 void printScore(int &score);
 

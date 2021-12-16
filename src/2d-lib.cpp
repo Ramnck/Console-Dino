@@ -1,43 +1,37 @@
 #include<2d-lib.h>
-#include<iostream>
 ;
 //enum state { jump = 0, run1, run2 };
 
-static char buffer[WIDTH * HEIGHT + 1];
+static char buffer[HEIGHT][WIDTH + 1];
+
+#ifdef WIN32
+char clear_console[] = "cls";
+#else
+char clear_console[] = "clear";
+#endif
 
 // score = 0;
 
-void optim() {
+void screen_init() {
 	std::ios::sync_with_stdio(false);
+	for (int i = 0; i < HEIGHT; i++) {
+		buffer[i][128] = '\0';
+		memset(buffer[i], ' ', WIDTH);
+	}
+	system("mode con cols=128 lines=64");
 }
 
 void pixel(int col, int row, bool colour) {
 	if(colour)
-	buffer[col + WIDTH * row] = 219;
+		buffer[row][col] = 219;
+	else 
+		buffer[row][col] = ' ';
 }
-
-//void print_sprite(int col, int row, bool sprite[]) {
-//	for (int i = row; i < row + IMG_SIZE; i++) {
-//		for (int j = col; j < col + IMG_SIZE; j++) {
-//			pixel(j, i, sprite[j - col + (i - row) * IMG_SIZE]);
-//		}
-//	}
-//
-//}
-//
-//void print_back() {
-//	int a = 1;
-//
-//}
 
 void display() {
-	buffer[WIDTH * HEIGHT] = '\0';
-	std::cout << buffer << "\r";
-}
-
-void clear() {
-	for (int i = 0; i < HEIGHT * WIDTH; i++)
-		buffer[i] = ' ';
+	system(clear_console);
+	for(int i = 0; i < HEIGHT + 1; i++)
+		puts(buffer[i]);
 }
 
 void jump_handler(Character &dino, int keylog) {
@@ -52,106 +46,13 @@ void jump_handler(Character &dino, int keylog) {
 	}
 
 	if (tick == 0) tick = keylog;
+	else if (tick == 32) tick = 0;
+	else tick++;
 
-	switch (tick)
-	{
-	case 1:
-		dino.row = direction ? dino.row - 5 : dino.row + 5;
-		tick = direction ? ++tick : --tick;
-		direction = UP;
-		break;
-	case 2:
-		dino.row = direction ? dino.row - 5 : dino.row + 5;
-		tick = direction ? ++tick : --tick;
-		break;
-	case 3:
-		tick = direction ? ++tick : --tick;
-		break;
-	case 4:
-		dino.row = direction ? dino.row - 4 : dino.row + 4;
-		tick = direction ? ++tick : --tick;
-		break;
-	case 5:
-		tick = direction ? ++tick : --tick;
-		break;
-	case 6:
-		dino.row = direction ? dino.row - 4 : dino.row + 4;
-		tick = direction ? ++tick : --tick;
-		break;
-	case 7:
-		tick = direction ? ++tick : --tick;
-		break;
-	case 8:
-		tick = direction ? ++tick : --tick;
-		break;
-	case 9:
-		dino.row = direction ? dino.row - 3: dino.row + 3;
-		tick = direction ? ++ tick : -- tick;
-		break;
-	case 10:
-		tick = direction ? ++tick : --tick;
-		break;
-	case 11:
-		dino.row = direction ? dino.row - 3 : dino.row + 3;
-		tick = direction ? ++ tick : -- tick;
-		break;
-	case 12:
-		tick = direction ? ++tick : --tick;
-		break;
-	case 13:
-		tick = direction ? ++tick : --tick;
-		break;
-	case 14:
-		dino.row = direction ? dino.row - 2 : dino.row + 2;
-		tick = direction ? ++ tick : -- tick;
-		break;
-	case 15:
-		tick = direction ? ++tick : --tick;
-		break;
-	case 16:
-		dino.row = direction ? dino.row - 1 : dino.row + 1;
-		tick = direction ? ++tick : --tick;
-		break;
-	case 17:
-		tick = direction ? ++tick : --tick;
-		break;
-	case 18:
-		dino.row = direction ? dino.row - 1 : dino.row + 1;
-		tick = direction ? ++tick : --tick;
-		break;
-	case 19:
-		tick = direction ? ++tick : --tick;
-		break;
-	case 20:
-		dino.row = direction ? dino.row - 1 : dino.row + 1;
-		tick = direction ? ++tick : --tick;
-		break;
-	case 21:
-		tick = direction ? ++tick : --tick;
-		break;
-	case 22:
-		tick = direction ? ++tick : --tick;
-		break;
-	case 23:
-		tick = direction ? ++tick : --tick;
-		break;
-	case 24:
-		tick = direction ? ++tick : --tick;
-		break;
-	case 25:
-		tick = direction ? ++tick : --tick;
-		break;
-	case 26:
-		direction = DOWN;
-		tick--;
-		break;
-
-	default:
-		break;
+	dino.row = round(0.13 * std::max((tick-16) * (tick-16), -15));
 	}
 
-}
-
+/*
 void printScore(int &score) {
 	static bool cond = false;
 	sprintf(buffer + WIDTH * 17 - 10, "%010d", score);
@@ -160,7 +61,7 @@ void printScore(int &score) {
 		// score++;
 	// cond = !cond;
 }
-
+*/
 
 void Character::print() {
 	int l_offset = 0;
@@ -193,6 +94,12 @@ bool Character::check_hit(Character &enemy) {							// enemy is cactus
 }
 
 void Back::offset() {
+	for(int i = row; i < row + BACK_H; i++) {
+		char left_reserved = buffer[i][0];
+		memcpy(buffer[i], buffer[i] + 1, WIDTH - 1);
+		buffer[i][WIDTH - 1] = left_reserved;
+	}
+/*
 	for (int i = 0; i < BACK_H; i++) {
 		bool left_reserved = *(bmp + st(WIDTH));
 		for (int j = st(WIDTH); j < st(WIDTH) + WIDTH - 1; j++) {
@@ -200,6 +107,7 @@ void Back::offset() {
 		}
 		*(bmp + WIDTH - 1 + WIDTH * i) = left_reserved;
 	}
+*/
 }
 
 void Back::print() {
@@ -210,29 +118,3 @@ void Back::print() {
 		}
 	}
 }
-
-
-/*
-void offset_sky() {
-	for (int i = 0; i < 28; i++) {
-		bool left_reserved = sky[st(28) - 1];
-		for (int j = st(28); j < st(28) + WIDTH - 1; j++) {
-			sky[j] = ground[j + 1];
-		}
-		sky[WIDTH - 1 + WIDTH * i] = left_reserved;
-	}
-
-}
-
-void offset_ground() {
-	for (int i = 2; i < 28; i++) {
-		bool left_reserved = ground[st(28) - 1];
-		for (int j = st(28); j < st(28) + WIDTH - 1; j++) {
-			ground[j] = ground[j + 1];
-		}
-		ground[WIDTH - 1 + WIDTH * i] = left_reserved;
-	}
-
-
-}
-*/
