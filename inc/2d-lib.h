@@ -7,7 +7,7 @@
 #include <cmath>
 #include <ctime>
 #include <unistd.h>
-
+#include <conio.h>
 
 #define UP true
 #define DOWN false

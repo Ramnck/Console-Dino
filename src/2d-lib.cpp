@@ -14,6 +14,7 @@ char clear_console[] = "clear";
 
 void screen_init() {
 	std::ios::sync_with_stdio(false);
+	setvbuf(stdout, NULL, _IONBF, 0);
 	for (int i = 0; i < HEIGHT; i++) {
 		buffer[i][128] = '\0';
 		memset(buffer[i], ' ', WIDTH);
@@ -31,7 +32,8 @@ void pixel(int col, int row, char colour) {
 }
 
 void display() {
-	system(clear_console);
+	// system(clear_console);
+
 	for(int i = 0; i < HEIGHT + 1; i++)
 		puts(buffer[i]);
 }
@@ -50,9 +52,9 @@ void jump_handler(Character &dino, int keylog) {
 
 	if (tick == 0) tick = keylog;
 	// if (tick == 0) tick = 1;
-	else tick = (++tick) % 42;
+	else tick = (++tick) % 62;
 
-	dino.row = std::min((int)round(0.083 * (tick-21) * (tick-21) - 1.5), 31);
+	dino.row = std::max(std::min((int)round(0.037 * (tick-31) * (tick-31) - 1.5), 31), 2);
 	}
 
 /*

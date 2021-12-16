@@ -7,7 +7,6 @@
 #include <Sprites.h>
 #include <Backs.h>
 #include <2d-lib.h>
-#include <conio.h>
 #include <string>
 #define FPS 30.0
 ;
