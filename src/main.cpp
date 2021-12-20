@@ -1,10 +1,4 @@
-﻿
-// #ifdef WIN32
-// #include <Windows.h>
-// #else
-
-// #endif
-#include <Sprites.h>
+﻿#include <Sprites.h>
 #include <Backs.h>
 #include <2d-lib.h>
 #include <string>
@@ -21,7 +15,7 @@ int main(int argc, char* argv[]) {
 	int _s = 0;
 	double FRQ = 1.0/FPS;
 	if (argc > 1) {
-		std::string flag = argv[1], num;
+		std::string flag (argv[1]), num;
 		if (argc > 2) 
 			num = argv[2];
 		if (flag == "-h" || flag == "--help") {
@@ -37,20 +31,18 @@ int main(int argc, char* argv[]) {
 		}
 		if (flag == "-f" || flag == "-fps")
 			FRQ = 1.0/double(std::stoi(num.c_str()));
-		// printf("%f\n", FRQ);
-		// getchar();
 	}
 	std::clock_t start;
 	#endif
 	state position = run2;
 	int debug = 0;
 
-	Character dino{ 10, 31, dino_bmp[position], position };
-	Character cactus1{ 127 +  random, 31, enemy_bmp, run1 };
-	Character cactus2{ 127 + 128 + random, 31, enemy_bmp, run1 };
+	Character dino{ 10, 31, dino_bmp[position]};
+	Character cactus1{ 127 +  random, 31, enemy_bmp};
+	Character cactus2{ 127 + 128 + random, 31, enemy_bmp};
 
-	Back clouds{ sky, SKY_ROW };
-	Back gnd{ ground, GND_ROW };
+	Back clouds(sky, SKY_ROW);
+	Back gnd(ground, GND_ROW);
 	
 	int button = 0;
 	short tick = 1;
@@ -58,8 +50,6 @@ int main(int argc, char* argv[]) {
     
 	clouds.print();
 	gnd.print();
-	// printf("%f\n\n", FRQ);
-	// getch();
 restart:
 	int score = _s;
 	while (!(dino.check_hit(cactus1) || dino.check_hit(cactus2))) {
@@ -112,13 +102,11 @@ restart:
 		cactus2.clear().col--;
 
 		#ifdef FPS
-		while ((( std::clock() - start ) / (double) CLOCKS_PER_SEC) < FRQ)
-			usleep(300);
+		while ((( std::clock() - start ) / (double) CLOCKS_PER_SEC) < FRQ);
+			// usleep(300);
 		#endif
 
     	}
-	
-	// std::cout << duration << std::endl;
 	cactus1.col = 127;
 	cactus2.col = 127 + random + 64;
 	jump_handler(dino, RESET);
@@ -128,8 +116,11 @@ restart:
 	#else
 	system("clear")
 	#endif
-	printf("Haha you losed (Click any key to continue)\nCTRL+C to stop\n");
-	_getch();
+	printf("Haha you losed (Click any key to continue)\nESC to stop\n");
+	if (_getch() == 27) {
+		printf("Thanks for playing");
+		return 0;
+	}
 	goto restart;
 	return 0;
 }

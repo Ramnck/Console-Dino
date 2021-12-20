@@ -69,6 +69,10 @@ void printScore(int &score) {
 }
 // */
 
+Character::Character(int _col, int _row, char* _bmp) : col(_col), row(_row), bmp(_bmp), cond(run1), height(IMG_H), width(IMG_W) {}
+
+Character::Character(int _col, int _row, char* _bmp, int _height, int _width) : col(_col), row(_row), bmp(_bmp), cond(run1), height(_height), width(_width) {}
+
 void Character::print() {
 	int l_offset = 0;
 	int r_offset = 0;
@@ -125,6 +129,10 @@ bool Character::check_hit(Character &enemy) {							// enemy is cactus
 		}
 	}
 }
+
+Back::Back(char* _bmp, int _row) : bmp(_bmp), row(_row), height(BACK_H), width(WIDTH) {}
+
+Back::Back(char* _bmp, int _row, int _height, int _width) : bmp(_bmp), row(_row), height(_height), width(_width) {}
 
 Back & Back::offset() {
 	for(int i = 0; i < BACK_H * WIDTH; i+= WIDTH) {
