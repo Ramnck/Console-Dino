@@ -128,8 +128,8 @@ restart:
 	#else
 	system("clear")
 	#endif
-	printf("Haha you losed (Click any key to continue)\nCTRL+C to stop\n");
-	_getch();
+	printf("Haha you losed (Click any key to continue)\nESC to stop\n");
+	if (_getch() == 27) return 0;
 	goto restart;
 	return 0;
 }
