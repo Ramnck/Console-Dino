@@ -36,6 +36,11 @@ public:
 	int row;
 	char* bmp;
 	state cond;
+	int height;
+	int width;
+
+	Character(int _col, int _row, char* _bmp);
+	Character(int _col, int _row, char* _bmp, int _height, int _width);
 
 	void print();
 	Character &  clear();
@@ -47,6 +52,13 @@ class Back
 public:
 	char* bmp;
 	int row;
+	int col = 0;
+	int height ;
+	int width ;
+
+	Back(char* _bmp, int _row);
+	Back(char* _bmp, int _row, int _height, int _width);
+
 	Back & offset();
 	void print();
 };
@@ -60,15 +72,3 @@ void display();
 void pixel(int col, int row, char colour);
 
 void printScore(int &score);
-
-/*
-void print_sprite(int col, int row, bool sprite[]);
-
-void print_back();
-
-void offset_sky();
-
-void offset_ground();
-
-bool check_hit(int col, int row);
-*/
