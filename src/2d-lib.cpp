@@ -4,15 +4,9 @@
 
 // static char buffer[HEIGHT][WIDTH + 1];
 
-#ifdef WIN32
-char clear_console[] = "cls";
-#else
-char clear_console[] = "clear";
-#endif
-
 // score = 0;
 
-void screen_init() {
+void Screen::init() {
 	// std::cout << "starting Screen init\n";
 	// std::cout << "external schecking width: " << Screen::width << " height " << Screen::height << " buf: " << Screen::buffer << "\n";
 	std::ios::sync_with_stdio(false);
@@ -55,25 +49,20 @@ void Screen::display() {
 }
 
 void jump_handler(Character &dino, int keylog) {
-	static int tick = 0;
-	// static bool direction = UP;
 
-	if (tick == 0) tick = keylog;
-	else tick = ((tick + 1) * Screen::crop) % 62;
+	if (Screen::jump_tick == 0) Screen::jump_tick = keylog;
+	else Screen::jump_tick = ((Screen::jump_tick + 1) * Screen::scale) % 62;
 
-	dino.row = std::max(std::min((int)round(0.037 * (tick-31) * (tick-31) - 1.5), 31), 2) / Screen::crop;
+	dino.row = std::max(std::min((int)round(0.037 * (Screen::jump_tick-31) * (Screen::jump_tick-31) - 1.5), 31), 2) / Screen::scale;
 	}
 
-void jump_handler(Character &dino, int keylog, int gnd_height) {
-	static int tick;
-	if (keylog == -1) {
-		tick = 0;
-		dino.row = Screen::height - 1 - dino.height - gnd_height;
-		return;
-	}
+void jump_handler(Character &dino) {
+	Screen::jump_tick = 0;
+	dino.row = Screen::dino_default_row;
+	return;
 }
 
-// /*
+/*
 void printScore(int &score) {
 	char tick = 0;
 	sprintf(Screen::buffer[17] - 10, "%5d", score);
@@ -81,7 +70,7 @@ void printScore(int &score) {
 	// if (!(tick = (++tick) % 3)) 
 		score++;
 }
-// */
+*/
 
 Character::Character(int _col, int _row, char* _bmp) : col(_col), row(_row), bmp(_bmp), cond(run1), height(IMG_H), width(IMG_W) {}
 

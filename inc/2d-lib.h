@@ -6,16 +6,13 @@
 #include <cstring>
 #include <cmath>
 #include <ctime>
-#include <unistd.h>
 #include <conio.h>
 
-#define UP true
-#define DOWN false
 #define RESET -1
+#define random (rand() % 9) - 4
 
 #define IMG_H 16
 #define IMG_W 16
-
 #define BACK_H 16
 
 #define WIDTH 128
@@ -24,21 +21,31 @@
 #define GND_ROW HEIGHT-1 - BACK_H
 #define SKY_ROW 0
 
-#define st(a) i*a
-#define random (rand() % 16) - 8
+#ifdef WIN32
+#define getch() _getch()
+#endif
+
+#ifdef WIN32
+#define clear_console "cls"
+#else
+#define clear_console "clear"
+#endif
 
 enum state { jump = 2, run1 = 0, run2 = 1 };
 
 class Screen 
 {
 public:
-	static int crop;
+	static int scale;
 	static int height;
 	static int width; 
 	static char ** buffer;
+	static int jump_tick;
+	static int dino_default_row;
 
 	Screen(int _height, int _width, char _buffer);
 
+	static void init();
 	static void display();
 	static void pixel(int col, int row, char colour);
 };
@@ -78,12 +85,6 @@ public:
 };
 
 void jump_handler(Character &dino, int keylog);
-void jump_handler(Character &dino, int keylog, int gnd_height);
+void jump_handler(Character &dino);
 
-void screen_init();
-
-// void display();
-
-
-
-void printScore(int &score);
+// void printScore(int &score);
