@@ -1,5 +1,5 @@
 #pragma once
-;
+
 #include <iostream>
 #include <cstdlib>
 #include <cstdio>
@@ -25,12 +25,26 @@
 #define SKY_ROW 0
 
 #define st(a) i*a
-#define random (rand() % 64)
+#define random (rand() % 16) - 8
 
 enum state { jump = 2, run1 = 0, run2 = 1 };
 
+class Screen 
+{
+public:
+	static int crop;
+	static int height;
+	static int width; 
+	static char ** buffer;
+
+	Screen(int _height, int _width, char _buffer);
+
+	static void display();
+	static void pixel(int col, int row, char colour);
+};
+
 class Character
-{	
+{
 public:
 	int col;
 	int row;
@@ -64,11 +78,12 @@ public:
 };
 
 void jump_handler(Character &dino, int keylog);
+void jump_handler(Character &dino, int keylog, int gnd_height);
 
 void screen_init();
 
-void display();
+// void display();
 
-void pixel(int col, int row, char colour);
+
 
 void printScore(int &score);

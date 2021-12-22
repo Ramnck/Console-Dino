@@ -2,17 +2,20 @@
 #include <Backs.h>
 #include <2d-lib.h>
 #include <string>
-#define FPS 30.0
-;
+#define FPS 60.0
 
 
+int Screen::crop;
+int Screen::height;
+int Screen::width;
+char** Screen::buffer;
 
 int main(int argc, char* argv[]) {
 //restart:
+
 	extern char* clear_console;
-	screen_init();
-	#ifdef FPS
 	int _s = 0;
+	#ifdef FPS
 	double FRQ = 1.0/FPS;
 	if (argc > 1) {
 		std::string flag (argv[1]), num;
@@ -35,9 +38,20 @@ int main(int argc, char* argv[]) {
 	std::clock_t start;
 	#endif
 	state position = run2;
-	int debug = 0;
+	int debug = 0, height = 64, width = 128, crop = 1;
+	//
+	char** buffer = new char*[height];
+	for (int i = 0; i < height; i++)
+		buffer[i] = new char[width + 1];
 
-	Character dino{ 10, 31, dino_bmp[position]};
+	Screen::crop = crop;
+	Screen::height = height;
+	Screen::width = width;
+	Screen::buffer = (char**)buffer;
+
+	screen_init();
+
+	Character dino{ 10, 0, dino_bmp[position]};
 	Character cactus1{ 127 +  random, 31, enemy_bmp};
 	Character cactus2{ 127 + 128 + random, 31, enemy_bmp};
 
@@ -46,7 +60,7 @@ int main(int argc, char* argv[]) {
 	
 	int button = 0;
 	short tick = 1;
-	jump_handler(dino, RESET);
+	jump_handler(dino, RESET, gnd.height);
     
 	clouds.print();
 	gnd.print();
@@ -58,14 +72,15 @@ restart:
 		start = std::clock();
 		#endif
 
-		tick = (++ tick) % 7;
+		tick = (tick + 1) % 7;
 
 		if (dino.row == 31 && tick == 6) dino.cond = state(!bool(dino.cond));
 		else if (dino.row < 31) dino.cond = jump;
 		else if (dino.row > 31) {
-			printf("row %d - ERROR", dino.row);
+			printf("ERROR: Character row %d", dino.row);
 			exit(1);
 		}
+		
 		dino.bmp = dino_bmp[dino.cond];
 
 		if (cactus1.col < -IMG_W + 1) cactus1.col = 127 + random;
@@ -84,8 +99,8 @@ restart:
 		cactus1.print();
 		cactus2.print();
 
-		display();
-		// /*
+		Screen::display();
+		
 		if (_kbhit()) {
 		#ifdef WIN32
 			_getch();
@@ -94,7 +109,6 @@ restart:
 		#endif
 			button = 1;
 		}
-		// */
 		jump_handler(dino.clear(), button);
 		button = 0;
 
