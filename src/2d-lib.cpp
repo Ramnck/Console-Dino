@@ -14,6 +14,7 @@ void Screen::init() {
 	setvbuf(stdout, NULL, _IONBF, 0);
 	setvbuf(stderr, NULL, _IONBF, 0);
 	setvbuf(stdin, NULL, _IONBF, 0);
+	
 	// std::cout << "setvbuffing over\n";
 	for (int i = 0; i < Screen::height; i++) {
 		// std::cout << i << '\n';
@@ -21,7 +22,7 @@ void Screen::init() {
 		memset(Screen::buffer[i], ' ', Screen::width);
 	}
 	// std::cout << "ending Screen init\n";
-	
+	system(clear_console);
 	#ifdef WIN32
 	system("mode con cols=128 lines=65");
 	#endif

@@ -9,7 +9,7 @@ all: main
 
 main:
 #	$(CC) $(CFLAGS) $(SRCS) -o Dino
-	$(CC) $(CFLAGS) src/2d-lib.cpp src/main.cpp -o Dino
+	$(CC) $(CFLAGS) src/2d-lib.cpp src/main.cpp -o dino
 
-refactor:
-	$(CC) $(CFLAGS) src/bmp-to-array.cpp -o refactor
+bmp:
+	$(CC) $(CFLAGS) src/bmp-to-array.cpp -o bmp
