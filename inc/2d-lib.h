@@ -31,7 +31,7 @@
 #define clear_console "clear"
 #endif
 
-enum state { jump = 2, run1 = 0, run2 = 1 };
+enum state { jump = 2, run1 = 0, run2 = 1, background = 3 };
 
 class Screen 
 {
@@ -56,10 +56,9 @@ public:
 	int col;
 	int row;
 	char* bmp;
-	state cond;
 	int height;
 	int width;
-
+	state cond;
 	Character(int _col, int _row, char* _bmp);
 	Character(int _col, int _row, char* _bmp, int _height, int _width);
 
@@ -82,6 +81,29 @@ public:
 
 	Back & offset();
 	void print();
+};
+
+class Sprite 
+{
+public:
+	int col;
+	int row;
+	char* bmp;
+	int height;
+	int width;
+	state cond;
+
+	Sprite(int _col, int _row, char* _bmp, int _height, int _width);
+
+	Sprite & clear();
+	Sprite & offset();
+
+	bool check_hit(Character &enemy);
+
+	void print();
+
+	friend void jump_handler(Character &dino, int keylog);
+	friend void jump_handler(Character &dino);
 };
 
 void jump_handler(Character &dino, int keylog);

@@ -2,3 +2,4 @@ start
 Dino
 *.exe
 .vscode/
+res/bmp.bmp

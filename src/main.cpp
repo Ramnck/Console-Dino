@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
 			FRQ = 1.0/double(std::stoi(num.c_str()));
 	}
 	#endif
-
+	printf("%f", FRQ);
 	// screen and game variables
 	int height = 64, width = 128, scale = 1, button = 0, tick = 1;
 

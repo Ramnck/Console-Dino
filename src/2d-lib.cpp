@@ -22,10 +22,10 @@ void Screen::init() {
 		memset(Screen::buffer[i], ' ', Screen::width);
 	}
 	// std::cout << "ending Screen init\n";
-	system(clear_console);
 	#ifdef WIN32
 	system("mode con cols=128 lines=65");
 	#endif
+	system(clear_console);
 }
 /*
 Screen::Screen(int _height, int _width, char** _buffer) {
@@ -80,9 +80,11 @@ Character::Character(int _col, int _row, char* _bmp, int _height, int _width) : 
 void Character::print() {
 	int l_offset = 0;
 	int r_offset = 0;
-	if (col > (Screen::width - 1)) return;
-	if (col < 0) l_offset = 0 - col;
-	if (col >= Screen::width - 1 - width) r_offset = width - (Screen::width - col);			// -1 ��� ��� ��������� ���������� � ���� 
+	if (col != 0) {
+		if (col > (Screen::width - 1)) return;
+		if (col < 0) l_offset = 0 - col;
+		if (col >= Screen::width - 1 - width) r_offset = width - (Screen::width - col);
+	}
 	/*
 	for (int i = 0; i < IMG_W; i++){
 		// memset(&buffer[row + i][col + l_offset], ' ', IMG_W - l_offset - r_offset);
@@ -121,7 +123,7 @@ Character & Character::clear() {
 }
 
 bool Character::check_hit(Character &enemy) {							// enemy is cactus
-	if ((row + height) / 4 * 3  < enemy.row) {								// -3 ������ ��� ������ �������� ����������� ���� ������ ��� ������ �������
+	if ((row + height) / 4 * 3  < enemy.row) {
 		return false;
 	}
 	else {
@@ -171,3 +173,6 @@ void Back::print() {
 		}
 	}
 }
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
