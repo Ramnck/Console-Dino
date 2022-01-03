@@ -67,6 +67,9 @@ public:
 	bool check_hit(Character &enemy);
 };
 
+void jump_handler(Character &dino, int keylog);
+void jump_handler(Character &dino);
+
 class Back 
 {
 public:
@@ -85,28 +88,29 @@ public:
 
 class Sprite 
 {
+	const int height;
+	const int width;
 public:
 	int col;
 	int row;
-	char* bmp;
-	int height;
-	int width;
+	char** bmp;
 	state cond;
-
-	Sprite(int _col, int _row, char* _bmp, int _height, int _width);
+	
+	Sprite(int _col, int _row, char** _bmp, int _height, int _width, state _cond);
 
 	Sprite & clear();
 	Sprite & offset();
 
-	bool check_hit(Character &enemy);
+	bool check_hit(Sprite &enemy);
 
 	void print();
 
-	friend void jump_handler(Character &dino, int keylog);
-	friend void jump_handler(Character &dino);
+	friend void jump_handler(Sprite &dino, int keylog);
+	friend void jump_handler(Sprite &dino);
 };
 
-void jump_handler(Character &dino, int keylog);
-void jump_handler(Character &dino);
+void jump_handler(Sprite &dino, int keylog);
+void jump_handler(Sprite &dino);
+
 
 // void printScore(int &score);

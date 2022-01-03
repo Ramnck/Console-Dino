@@ -80,19 +80,9 @@ Character::Character(int _col, int _row, char* _bmp, int _height, int _width) : 
 void Character::print() {
 	int l_offset = 0;
 	int r_offset = 0;
-	if (col != 0) {
-		if (col > (Screen::width - 1)) return;
-		if (col < 0) l_offset = 0 - col;
-		if (col >= Screen::width - 1 - width) r_offset = width - (Screen::width - col);
-	}
-	/*
-	for (int i = 0; i < IMG_W; i++){
-		// memset(&buffer[row + i][col + l_offset], ' ', IMG_W - l_offset - r_offset);
-		memcpy(buffer[row + i] + col + l_offset, bmp+ (row + i) * IMG_W + l_offset , IMG_W - l_offset - r_offset);
-	}
-	*/
-	// /*
-	
+	if (col > (Screen::width - 1)) return;
+	if (col < 0) l_offset = 0 - col;
+	if (col >= Screen::width - 1 - width) r_offset = width - (Screen::width - col);
 	
 	char cur_pixel;
 	for (int i = row; i < row + height; i++) {
@@ -127,12 +117,10 @@ bool Character::check_hit(Character &enemy) {							// enemy is cactus
 		return false;
 	}
 	else {
-		if (col + height < enemy.col || col > enemy.col + enemy.width) {
+		if (col + height < enemy.col || col > enemy.col + enemy.width) 
 			return false;
-		}
-		else {
+		else
 			return true;
-		}
 	}
 }
 
@@ -166,13 +154,97 @@ Back & Back::offset() {
 }
 
 void Back::print() {
-	int col = 0;
-	for (int i = row; i < row + height; i++) {
-		for (int j = col; j < col + width; j++) {
-			Screen::pixel(j, i, *(bmp + j - col + (i - row) * Screen::width));
-		}
-	}
+
+	// for (int i = row; i < row + height; i++) {
+	// 	for (int j = col; j < col + width; j++) {
+	// 		Screen::pixel(j, i, *(bmp + j - col + (i - row) * Screen::width));
+	// 	}
+	// }
+	for (int h = 0; h < height; h++) memcpy(Screen::buffer[h + row], bmp + (width * h), width);
 }
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+Sprite::Sprite(int _col, int _row, char** _bmp, int _height, int _width, state _cond) :
+	col(_col), row(_row), bmp(bmp), height(_height), width(_width), cond(_cond) {}
+
+
+void Sprite::print() {
+
+	switch (cond)
+	{
+	case background:
+		for (int h = 0; h < height; h++) memcpy(Screen::buffer[h + row] + col, bmp + (width * h), width);
+		break;
+
+	default:
+		int l_offset = 0, r_offset = 0;
+		if (col > (Screen::width - 1)) return;
+		if (col < 0) l_offset = 0 - col;
+		if (col >= Screen::width - 1 - width) r_offset = width - (Screen::width - col);
+		/*
+		char cur_pixel;
+		for (int i = row; i < row + height; i++) {
+			for (int j = col + l_offset; j < col + width - r_offset; j++) {
+				cur_pixel = *(bmp + j - col + (i - row) * width);
+				if (cur_pixel == -37)
+					Screen::pixel(j, i, -37);
+			}
+		}
+		*/
+		for (int h = 0; h < height; h++) 
+			for (int w = l_offset; w < width - r_offset; w++) 
+				if (bmp[h][w] == -37)
+					Screen::pixel(w + col, h + row, -37);
+		break;
+	}
+}
+
+Sprite & Sprite::offset() {
+	for(int i = 0; i < height; i++) {
+		char left_reserved = bmp[i][0];
+		memcpy(bmp[i], bmp[i] + 1, width - 1);
+		bmp[i][width - 1] = left_reserved;
+	}
+	return *this;
+}
+
+Sprite & Sprite::clear() {
+int l_offset = 0, r_offset = 0;
+	if (col > (Screen::width - 1)) return;
+	if (col < 0) l_offset = 0 - col;
+	if (col >= Screen::width - 1 - width) r_offset = width - (Screen::width - col);
+	/*
+	char cur_pixel;
+	for (int i = row; i < row + height; i++) {
+		for (int j = col + l_offset; j < col + width - r_offset; j++) {
+			cur_pixel = *(bmp + j - col + (i - row) * width);
+			if (cur_pixel == -37)
+				Screen::pixel(j, i, ' ');
+		}
+	}
+	*/
+	for (int h = 0; h < height; h++) 
+		for (int w = l_offset; w < width - r_offset; w++) 
+			if (bmp[h][w] == -37)
+				Screen::pixel(w + col, h + row, ' ');
+	return *this;
+}
+
+bool Sprite::check_hit(Sprite &enemy) {
+	if ((row + height) / 4 * 3  < enemy.row) {
+		return false;
+	}
+	else {
+		if (col + height < enemy.col || col > enemy.col + enemy.width) 
+			return false;
+		else
+			return true;
+	}
+}
