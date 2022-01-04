@@ -25,6 +25,61 @@ void Screen::display() {
 	for(int i = 0; i < Screen::height; i++) puts(buffer[i]);
 }
 
+
+std::pair<int, int>* resolution(std::string filename) {
+    FILE * file = fopen(filename.c_str(), "rb");
+    int width, height;
+    fread(&width, 4, 1, file);
+    fread(&height, 4, 1, file);
+    fclose(file);
+    std::pair<int, int>* ptr = new std::pair<int, int>;
+    *ptr = std::make_pair(width, height);
+    return ptr;
+}
+
+image* fileToArray(std::string filename) {
+    FILE * file = fopen(filename.c_str(), "rb");
+    short d;
+    fseek(file, 18, SEEK_SET);
+    int width, height;
+    fread(&width, 4, 1, file);
+    fread(&height, 4, 1, file);
+    fseek(file, 28, SEEK_SET);
+    fread(&d, 2, 1, file);
+    if (d != 1) { printf("\nERROR: wrong color depth in file %s\n",filename); exit(1); }
+    // cout << width << ' ' << height << ' ' << d << '\n';
+    // char array[height][width];
+
+    char** array = new char*[height]; for(int i = 0; i < height; i++) array[i] = new char[width];
+
+    fseek(file, 62, SEEK_SET);
+    for (int h = height - 1; h >= 0; h--) {
+        char byte, bits_left, bytes_to_skip = (4 - ((int)std::ceil( (double)width / 8.0 ) % 4)) % 4;
+        bits_left = width;
+        while (bits_left > 0) {
+            fread(&byte, 1, 1, file);
+            int x = 8 - std::min(8, (int)bits_left);
+            for(int bit_mask = std::pow(2,7); bit_mask >= std::pow(2, x); bit_mask /= 2)
+                array[h][width - bits_left--] = byte & bit_mask ? ' ' : -37;
+        }
+        fseek(file, bytes_to_skip, SEEK_CUR);
+    }
+    fclose(file);
+
+	image* output = new image; output->second = new std::pair<int,int>;
+	output->first = array; output->first = width; output->second = height;
+
+    return output;
+}
+
+image* makeTransparent(image* img) {
+	for (int h = 0; h < img->second->second; h++)
+		for(int w = 0; w < img->second->first; w++)
+			if (img->first[h][w] == ' ') img->first[h][w] = 101;
+	return img;
+}
+
+/*
 void jump_handler(Character &dino, int keylog) {
 
 	if (Screen::jump_tick == 0) Screen::jump_tick = keylog;
@@ -39,12 +94,7 @@ void jump_handler(Character &dino) {
 	return;
 }
 
-char** makeTransparent(char** bmp, std::pair<int,int>* resolution) {
-	for (int h = 0; h < resolution->first; h++) 
-		for(int w = 0; w < resolution->second; w++) 
-			if (bmp[h][w] == ' ') bmp[h][w] = 101;
-	return bmp;
-}
+
 
 Character::Character(int _col, int _row, char* _bmp) : col(_col), row(_row), bmp(_bmp), cond(run1), height(IMG_H), width(IMG_W) {}
 
@@ -116,18 +166,18 @@ Back & Back::offset() {
 void Back::print() {
 	for (int h = 0; h < height; h++) memcpy(Screen::buffer[h + row], bmp + (width * h), width);
 }
+*/
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-Sprite::Sprite(int _col, int _row, char** _bmp, int _height, int _width, state _cond = run1) :
-	col(_col), row(_row), bmp(bmp), 
-	height(_height), width(_width), cond(_cond) {}
+Sprite::Sprite(int _col, int _row, image* _img, state _cond = run1) :
+	col(_col), row(_row), bmp(_img->first), 
+	height(_img->second->second), width(_img->second->first), cond(_cond) {}
 
 
 void Sprite::print() {

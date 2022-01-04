@@ -11,21 +11,13 @@
 #define RESET -1
 #define random (rand() % 9) - 4
 
-#define IMG_H 16
-#define IMG_W 16
-#define BACK_H 16
-
-#define WIDTH 128
-#define HEIGHT 64
-
-#define GND_ROW HEIGHT-1 - BACK_H
-#define SKY_ROW 0
-
 #define getch() _getch()
 
 #define clear_console "cls"
 
 enum state { jump = 2, run1 = 0, run2 = 1, background = 3 };
+
+using image = std::pair<char**,std::pair<int,int>*>; 
 
 class Screen 
 {
@@ -43,7 +35,7 @@ public:
 	static void display();
 	static void pixel(int col, int row, char colour);
 };
-
+/*
 class Character
 {
 public:
@@ -79,7 +71,7 @@ public:
 	Back & offset();
 	void print();
 };
-
+*/
 class Sprite 
 {
 	const int height;
@@ -90,7 +82,7 @@ public:
 	char** bmp;
 	state cond;
 	
-	Sprite(int _col, int _row, char** _bmp, int _height, int _width, state _cond);
+	Sprite(int _col, int _row, image* _img, state _cond);
 
 	Sprite & clear();
 	Sprite & offset();
@@ -106,4 +98,6 @@ public:
 void jump_handler(Sprite &dino, int keylog);
 void jump_handler(Sprite &dino);
 
-char** makeTransparent(char** bmp, std::pair<int, int> resolution);
+image* makeTransparent(image* img);
+
+image* fileToArray(std::string filename);

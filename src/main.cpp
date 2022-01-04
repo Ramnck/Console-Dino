@@ -13,8 +13,6 @@ int Screen::jump_tick;
 int Screen::dino_default_row;
 
 int main(int argc, char* argv[]) {
-
-	std::pair<int, int>* temp = new std::pair<int,int>;
 	
 	// Handling console arguments
 	double FRQ = 1.0/60;
@@ -46,6 +44,8 @@ int main(int argc, char* argv[]) {
 	Screen::buffer = (char**)buffer;
 	Screen::init();
 
+
+	/*
 	// Backs initialization
 	Back clouds(sky, SKY_ROW);
 	Back gnd(ground, GND_ROW);
@@ -54,7 +54,14 @@ int main(int argc, char* argv[]) {
 	Character dino( Screen::width / 12, 0, dino_bmp[0] );
 	Character cactusk1( Screen::width + random, Screen::height - gnd.height - IMG_H - 1, enemy_bmp );
 	Character cactusk2( (Screen::width * 1.5) + random, Screen::height - gnd.height - IMG_H - 1, enemy_bmp );
+	*/
+
+	std::pair<int, int>* temp = new std::pair<int,int>;
+	
+	Sprite clouds(0, 0, fileToArray("clouds.bmp"), );
+
 	Screen::dino_default_row = Screen::height - 1 - dino.height - gnd.height;
+
 
 restart:
 	jump_handler(dino);
