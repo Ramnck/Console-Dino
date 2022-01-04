@@ -14,35 +14,23 @@ int Screen::dino_default_row;
 
 int main(int argc, char* argv[]) {
 
-	// int _s = 0;
-
+	std::pair<int, int>* temp = new std::pair<int,int>;
+	
 	// Handling console arguments
-	#ifdef FPS
-	double FRQ = 1.0/FPS;
+	double FRQ = 1.0/60;
 	std::clock_t start;
 	if (argc > 1) {
 		std::string flag (argv[1]), num;
-		if (argc > 2) 
-			num = argv[2];
+		if (argc > 2) num = argv[2];
 		if (flag == "-h" || flag == "--help") {
-			// printf("Usage: %s [-h | --help] [-s to print score] [-f | --fps <FPS> (default = 30)] ", argv[0]);
-			printf("Usage: %s [-h | --help] [-f | --fps <FPS> (default = 30)] ", argv[0]);
-			exit(1);
+			printf("Usage: %s [-h | --help] [-f | --fps <FPS> (default = 60)] ", argv[0]);
+			return 0;
 		}
-		/*
-		if (flag == "-s") {
-			_s = 1;
-			if (argc > 2) {
-				flag = argv[2];
-				num = argv[3];
-			}
-		}
-		*/
-		if (flag == "-f" || flag == "--fps")
-			FRQ = 1.0/double(std::stoi(num.c_str()));
+		if (flag == "-f" || flag == "--fps") FRQ = 1.0/double(std::stoi(num.c_str()));
 	}
-	#endif
-	printf("%f", FRQ);
+
+	printf("FRQ is %f, argc is %d", FRQ, argc); _getch();
+
 	// screen and game variables
 	int height = 64, width = 128, scale = 1, button = 0, tick = 1;
 
@@ -64,18 +52,16 @@ int main(int argc, char* argv[]) {
 
 	// Characters initialization
 	Character dino( Screen::width / 12, 0, dino_bmp[0] );
-	Character cactus1( Screen::width +  random, Screen::height - gnd.height - IMG_H - 1, enemy_bmp );
-	Character cactus2( (Screen::width * 2) + random, Screen::height - gnd.height - IMG_H - 1, enemy_bmp );
+	Character cactusk1( Screen::width + random, Screen::height - gnd.height - IMG_H - 1, enemy_bmp );
+	Character cactusk2( (Screen::width * 1.5) + random, Screen::height - gnd.height - IMG_H - 1, enemy_bmp );
 	Screen::dino_default_row = Screen::height - 1 - dino.height - gnd.height;
 
 restart:
 	jump_handler(dino);
-	// int score = _s;
-	while (!(dino.check_hit(cactus1) || dino.check_hit(cactus2))) {
 
-		#ifdef FPS
+	while (!(dino.check_hit(cactusk1) || dino.check_hit(cactusk2))) {
+
 		start = std::clock();
-		#endif
 
 		tick = (tick + 1) % 7;
 
@@ -84,33 +70,27 @@ restart:
 		else if (dino.row < Screen::dino_default_row) dino.cond = jump;
 		else if (dino.row > Screen::dino_default_row) {
 			printf("ERROR: Character row %d", dino.row);
-			exit(1);
+			return 1;
 		}
 		dino.bmp = dino_bmp[dino.cond];
 
-		// Respawning cactuses
-		if (cactus1.col < -cactus1.width + 1) cactus1.col = Screen::width + random;
-		if (cactus2.col < -cactus2.width + 1) cactus2.col = Screen::width + random;
-
-		/*
-		if (score)
-			printScore(score);
-		*/
+		// Respawning cactuskes
+		if (cactusk1.col < -cactusk1.width + 1) cactusk1.col = Screen::width + random;
+		if (cactusk2.col < -cactusk2.width + 1) cactusk2.col = Screen::width + random;
 
 		// Printing and ofsetting backs
-		if (tick % 3 == 0) 
-			clouds.offset();
+		if (tick % 3 == 0) clouds.offset();
 		clouds.print();
 		gnd.offset().print();
 
 		// Printing characters
 		dino.print();
-		cactus1.print();
-		cactus2.print();
+		cactusk1.print();
+		cactusk2.print();
 
 		// Displaying buffer
 		Screen::display();
-		
+
 		// Jump handling
 		if (_kbhit()) 
 			if (getch() == 32) // Space
@@ -118,20 +98,19 @@ restart:
 		jump_handler(dino.clear(), button);
 		button = 0;
 
-		// Moving cactuses
-		cactus1.clear().col--;
-		cactus2.clear().col--;
+		// Moving cactuskes
+		cactusk1.clear().col--;
+		cactusk2.clear().col--;
 
 		// Framerate control
-		#ifdef FPS
+
 		while ((( std::clock() - start ) / (double) CLOCKS_PER_SEC) < FRQ);
-		#endif
 
     	}
 	
 	// Resetting all values
-	cactus1.col = Screen::width;
-	cactus2.col = Screen::width + random + (Screen::width / 2);
+	cactusk1.col = Screen::width;
+	cactusk2.col = Screen::width + random + (Screen::width / 2);
 	jump_handler(dino, RESET);
 	tick = 1;
 	system(clear_console);

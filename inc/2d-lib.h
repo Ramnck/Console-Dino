@@ -21,15 +21,9 @@
 #define GND_ROW HEIGHT-1 - BACK_H
 #define SKY_ROW 0
 
-#ifdef WIN32
 #define getch() _getch()
-#endif
 
-#ifdef WIN32
 #define clear_console "cls"
-#else
-#define clear_console "clear"
-#endif
 
 enum state { jump = 2, run1 = 0, run2 = 1, background = 3 };
 
@@ -112,5 +106,4 @@ public:
 void jump_handler(Sprite &dino, int keylog);
 void jump_handler(Sprite &dino);
 
-
-// void printScore(int &score);
+char** makeTransparent(char** bmp, std::pair<int, int> resolution);
