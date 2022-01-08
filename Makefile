@@ -8,8 +8,5 @@ CFLAGS=-O3 -s -g0 -I inc
 all: main
 
 main:
-#	$(CC) $(CFLAGS) $(SRCS) -o Dino
-	$(CC) $(CFLAGS) src/2d-lib.cpp src/main.cpp -o dino
-
-bmp:
-	$(CC) $(CFLAGS) src/bmp-to-array.cpp -o bmp
+	$(CC) $(CFLAGS) $(SRCS) -o dino
+#	$(CC) $(CFLAGS) src/2d-lib.cpp src/main.cpp -o dino
