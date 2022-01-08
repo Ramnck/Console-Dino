@@ -6,7 +6,7 @@
 int Screen::scale;
 int Screen::height;
 int Screen::width;
-char** Screen::buffer;
+char* Screen::buffer;
 int Screen::jump_tick;
 int Screen::dino_default_row;
 
@@ -31,15 +31,13 @@ int main(int argc, char* argv[]) {
 	int height = 64, width = 128, scale = 1, button = 0, tick = 1;
 
 	// Allocating screen buffer;
-	char** buffer = new char*[height];
-	for (int i = 0; i < height; i++)
-		buffer[i] = new char[width + 1];
-
+	// char** buffer = new char*[height]; for (int i = 0; i < height; i++) buffer[i] = new char[width + 1];
+	char* buffer = new char[height*width];
 	// Screen initialization
 	Screen::scale = scale;
 	Screen::height = height;
 	Screen::width = width;
-	Screen::buffer = (char**)buffer;
+	Screen::buffer = buffer;
 	Screen::init();
 
 

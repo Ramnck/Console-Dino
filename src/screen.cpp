@@ -10,19 +10,25 @@ void Screen::init() {
 	
 	for (int i = 0; i < Screen::height; i++) {
 		// std::cout << i << '\n';
-		Screen::buffer[i][Screen::width] = '\0';
-		memset(Screen::buffer[i], ' ', Screen::width);
+		Screen::buffer[(i * width) + Screen::width] = '\0';
+		memset(Screen::buffer + (i * width), ' ', Screen::width);
 	}
-	system("mode con cols=129 lines=65");
+    // std::string temp_str;
+    // temp_str += "mode con cols=";
+    // temp_str += std::to_string(width);
+    // temp_str += " ";
+    // temp_str += std::to_string(height);
+    // system(temp_str.c_str());
+	system("mode con cols=128 lines=64");
 	system("cls");
 }
 
 void Screen::pixel(int col, int row, char colour) {
-	buffer[row][col] = colour;
+	buffer[(row * width) + col] = colour;
 }
 
 void Screen::display() {
-	for(int i = 0; i < Screen::height; i++) puts(buffer[i]);
+	puts(buffer);
 }
 
 image* fileToArray(std::string filename) {

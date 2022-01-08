@@ -8,7 +8,7 @@ public:
 	static int scale;
 	static int height;
 	static int width; 
-	static char ** buffer;
+	static char * buffer;
 	static int jump_tick;
 	static int dino_default_row;
 

@@ -37,12 +37,12 @@ void Sprite::print() {
 		else if (col >= Screen::width - 1 - width) r_offset = width - (Screen::width - col);
 		
 		for (int h = 0; h < height; h++)
-			memcpy(Screen::buffer[h + row] + col + l_offset, bmp[h] + l_offset, width - l_offset - r_offset);
+			memcpy(Screen::buffer + ((h + row) * Screen::width) + col + l_offset, bmp[h] + l_offset, width - l_offset - r_offset);
 	}
 
 	else if (kind == background) {
 		for (int h = 0; h < height; h++)
-			memcpy(Screen::buffer[h + row] + col, bmp[h], width);
+			memcpy(Screen::buffer + ((h + row) * Screen::width) + col, bmp[h], width);
 	}
 }
 
@@ -65,7 +65,7 @@ Sprite & Sprite::clear() {
 	
 	for (int h = 0; h < height; h++) 
 		for (int w = l_offset; w < width - r_offset; w++) 
-			memset(Screen::buffer[h + row] + col + l_offset, ' ', width - l_offset - r_offset);
+			memset(Screen::buffer + ((h + row) * Screen::width) + col + l_offset, ' ', width - l_offset - r_offset);
 	}
 	else if (kind == character) {
 		for (int h = 0; h < height; h++) 
