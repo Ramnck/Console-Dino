@@ -8,7 +8,14 @@
 
 enum state { character, background, enemy };
 
-using image = std::pair<char**,std::pair<int,int>*>; 
+// using image = std::pair<char**,std::pair<int,int>*>; 
+
+struct image {
+	char** bmp;
+	int w;
+	int h;
+	~image();
+};
 
 class Sprite 
 {
@@ -44,3 +51,5 @@ void jump_handler(Sprite &dino);
 void testImage(char ** bmp, std::pair<int,int> resolution);
 
 image* fileToArray(std::string filename);
+
+image* crop(image* img);

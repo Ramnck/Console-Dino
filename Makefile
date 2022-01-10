@@ -4,7 +4,7 @@ ifeq ($(OS),Windows_NT)
 else
 	SRCS=$(shell find . -name "*.cpp")
 endif
-CFLAGS=-O3 -s -g0 -I inc
+CFLAGS=-O2 -s -g0 -I inc
 all: main
 
 main:

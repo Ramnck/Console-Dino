@@ -10,33 +10,28 @@ char* Screen::buffer;
 int Screen::jump_tick;
 int Screen::dino_default_row;
 HANDLE Screen::console_handler;
-DWORD Screen::bytes_written;
+DWORD Screen::bytes_written = 0;
 
 int main(int argc, char* argv[]) {
 	
 	// Handling console arguments
 	double FRQ = 1.0/FPS;
 	std::clock_t start;
-	if (argc > 1) {
-		std::string flag (argv[1]), num;
-		if (argc > 2) num = argv[2];
-		if (flag == "-h" || flag == "--help") {
-			printf("Usage: %s [-h | --help] [-f | --fps <FPS> (default = 60)] ", argv[0]);
-			return 0;
-		}
-		if (flag == "-f" || flag == "--fps") FRQ = 1.0/double(std::stoi(num.c_str()));
-	}
-
+	
 	// screen and game variables
 	int height = 64, width = 128, scale = 1, button = 0, tick = 1;
 
-	// Allocating screen buffer;
-	char* buffer = new char[height*width + 1];
+	for(int i = 1; i < argc; i++) {
+		if ((std::string) argv[i] == "-h" ) {printf("Usage: %s [-h | --help] [-f | --fps <FPS> (default = 60)] ", argv[0]); return 0;}
+		else if ((std::string) argv[i] == "-m" || (std::string) argv[i] == "--minimize") scale = atoi(argv[i+1]);
+		else if ((std::string) argv[i] == "-f" || (std::string) argv[i] == "--fps") FRQ = 1.0/atoi(argv[i+1]);
+	}
 
 	// Screen initialization
 	Screen::scale = scale;
-	Screen::height = height;
 	Screen::width = width;
+	Screen::height = height;
+	char* buffer = new char[height*width + 1];
 	Screen::buffer = buffer;
 	Screen::bytes_written = height*width;
 	Screen::init();
@@ -44,18 +39,28 @@ int main(int argc, char* argv[]) {
 	Sprite clouds(0, 0, fileToArray("res/clouds.bmp"), background);
 	
 	image* gnd_img = fileToArray("res/ground.bmp");
-	Sprite gnd (0, Screen::height - 1 - gnd_img->second->second, gnd_img, background);
+	Sprite gnd (0, Screen::height - 1 - gnd_img->h, gnd_img, background);
 
-	char** dino_bmps[3] = {fileToArray("res/run1.bmp")->first, fileToArray("res/run2.bmp")->first, fileToArray("res/jump.bmp")->first};
+	char** dino_bmps[3] = {fileToArray("res/run1.bmp")->bmp, fileToArray("res/run2.bmp")->bmp, fileToArray("res/jump.bmp")->bmp};
 
 	Sprite dino (Screen::width / 12, 0, fileToArray("res/run1.bmp"), character);
-	Screen::dino_default_row = Screen::height - 1 - dino.getResolution().second - gnd_img->second->second;
+	Screen::dino_default_row = Screen::height - 1 - dino.getResolution().second - gnd_img->h;
 
-	Sprite cactusk1(Screen::width + random, Screen::dino_default_row, fileToArray("res/cactus.bmp"), enemy);
-	Sprite cactusk2(Screen::width * 1.5 + random, Screen::dino_default_row, fileToArray("res/cactus.bmp"), enemy);
+	Sprite cactusk1(width + random, 0, fileToArray("res/cactus.bmp"), enemy);
+	cactusk1.row = height - 1 - cactusk1.getResolution().second - gnd_img->h;
+	Sprite cactusk2(width * 1.5 + random, cactusk1.row, fileToArray("res/cactus.bmp"), enemy);
+	cactusk2.row = height - 1 - cactusk2.getResolution().second - gnd_img->h;
+
+	{
+	Sprite(0,0,fileToArray("res/startscreen.bmp"), background).print();
+	Screen::display();
+	if (_getch() == 27) { printf("Thanks for playing"); return 0; }
+	}
 
 restart:
 	jump_handler(dino);
+	Screen::clear();
+
 	while (!(dino.check_hit(cactusk1) || dino.check_hit(cactusk2))) {
 
 		start = std::clock();
@@ -84,11 +89,8 @@ restart:
 		Screen::display();
 
 		// Jump handling
-		if (_kbhit()) 
-			if (getch() == 32) // Space
-				button = 1;
-		jump_handler(dino.clear(), button);
-		button = 0;
+		if (_kbhit()) if (getch() == 32) button = 1; // Space
+		jump_handler(dino.clear(), button); button = 0;
 
 		// Moving cactuskes
 		cactusk1.clear().col--;
@@ -105,20 +107,15 @@ restart:
 	cactusk2.col = Screen::width + random + (Screen::width / 2);
 	jump_handler(dino, RESET);
 	tick = 1;
-	system("cls");
+	// system("cls");
 	
 	// End message
 	// printf("Haha you losed (Click any key to continue)\nESC to exit\n");
-
+	{
 	Sprite(0,0,fileToArray("res/endscreen.bmp"), background).print();
 	Screen::display();
-
-	if (_getch() == 27) {
-		printf("Thanks for playing");
-		return 0;
+	if (_getch() == 27) { printf("Thanks for playing"); return 0; }
 	}
-	std::cin.clear();
-	
 	// Restart
 	goto restart;
 	return 0;

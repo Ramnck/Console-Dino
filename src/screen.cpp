@@ -3,36 +3,32 @@
 
 void Screen::init() {
 
+    _COORD coord;
+	coord.X = Screen::width;
+	coord.Y = Screen::height;
+	_SMALL_RECT Rect;
+	Rect.Top = 0;
+	Rect.Left = 0;
+	Rect.Bottom = coord.Y - 1;
+	Rect.Right = coord.X - 1;
+	HANDLE Handle = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleScreenBufferSize(Handle, coord);
+	SetConsoleWindowInfo(Handle, TRUE, &Rect);
+
     Screen::console_handler = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL); 
 
-	SetConsoleActiveScreenBuffer(Screen::console_handler); // Настройка консоли
+	SetConsoleActiveScreenBuffer(Screen::console_handler);
 
-	std::ios::sync_with_stdio(false);
-	setvbuf(stdout, NULL, _IONBF, 0);
-	setvbuf(stderr, NULL, _IONBF, 0);
-	setvbuf(stdin, NULL, _IONBF, 0);
-	
-	// for (int i = 0; i < Screen::height; i++) {
-		// std::cout << i << '\n';
-		Screen::buffer[Screen::width * Screen::height] = '\0';
-		// memset(Screen::buffer + (i * width), ' ', Screen::width);
-	// }
-    // std::string temp_str;
-    // temp_str += "mode con cols=";
-    // temp_str += std::to_string(width);
-    // temp_str += " ";
-    // temp_str += std::to_string(height);
-    // system(temp_str.c_str());
-	// system("mode con cols=128 lines=64");
-	// system("cls");
 }
 
 void Screen::pixel(int col, int row, char colour) {
 	buffer[(row * width) + col] = colour;
 }
 
+void Screen::clear() {for (int i = 0; i < Screen::width * Screen::height; i++) Screen::buffer[i] = ' ';}
+
 void Screen::display() {
-	// puts(buffer);
+    // Screen::buffer[Screen::width * Screen::height - 1] = '\0';
     WriteConsoleOutputCharacter(Screen::console_handler, (LPCSTR) Screen::buffer, Screen::width * Screen::height + 1, { 0, 0 }, &Screen::bytes_written);
 }
 
@@ -47,8 +43,8 @@ image* fileToArray(std::string filename) {
     fseek(file, 28, SEEK_SET);
     fread(&d, 2, 1, file);
     if (d != 1) { printf("\nERROR: wrong color depth in file %s\n",filename); exit(1); }
-    // cout << width << ' ' << height << ' ' << d << '\n';
-    // char array[height][width];
+
+    // if (width != 128 && width != 16 || height != 16 && height != 64) {printf("ERROR: wrong resolution in file %s", filename.c_str()); exit(1);}
 
     char** array = new char*[height]; for(int i = 0; i < height; i++) array[i] = new char[width];
 
@@ -67,8 +63,8 @@ image* fileToArray(std::string filename) {
     }
     fclose(file);
 
-	image* output = new image; output->second = new std::pair<int,int>;
-	output->first = array; output->second->first = width; output->second->second = height;
+	image* output = new image;
+	output->bmp = array; output->w = width; output->h = height;
 
-    return output;
+    return crop(output);
 }

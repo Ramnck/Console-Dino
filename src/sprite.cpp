@@ -5,8 +5,7 @@ void jump_handler(Sprite &dino, int keylog) {
 
 	if (Screen::jump_tick == 0) Screen::jump_tick = keylog;
 	else Screen::jump_tick = ((Screen::jump_tick + 1) * Screen::scale) % 62;
-
-	dino.row = std::max(std::min((int)round(0.037 * (Screen::jump_tick-31) * (Screen::jump_tick-31) - 1.5) - (dino.height - 16), 31), 2) / Screen::scale;
+	dino.row = std::max(std::min((int)round(0.037 * (Screen::jump_tick-31) * (Screen::jump_tick-31) - 1.5) - (dino.height - 16), Screen::dino_default_row), 2) / Screen::scale;
 }
 
 void jump_handler(Sprite &dino) {
@@ -15,9 +14,11 @@ void jump_handler(Sprite &dino) {
 	return;
 }
 
+image::~image() { for(int i = 0; i < h; i++) delete[] bmp[i]; }
+
 Sprite::Sprite(int _col, int _row, image* _img, state _kind) :
-	col(_col), row(_row), bmp(_img->first), 
-	height(_img->second->second), width(_img->second->first), kind(_kind) {}
+	col(_col), row(_row), bmp(_img->bmp), 
+	height(_img->h), width(_img->w), kind(_kind) {}
 
 std::pair<int,int> Sprite::getResolution() { return std::make_pair(width,height); }
 
@@ -26,8 +27,8 @@ void Sprite::print() {
 	if (kind == character) {
 		for (int h = 0; h < height; h++) 
 			for (int w = 0; w < width ; w++) 
-				if (bmp[h][w] == -37)
-					Screen::pixel(w + col, h + row, -37);
+				if (bmp[h][w] != ' ')
+					Screen::pixel(w + col, h + row, bmp[h][w]);
 	}
 
 	else if (kind == enemy) {
@@ -70,7 +71,7 @@ Sprite & Sprite::clear() {
 	else if (kind == character) {
 		for (int h = 0; h < height; h++) 
 			for (int w = 0; w < width; w++) 
-				if (bmp[h][w] == -37)
+				if (bmp[h][w] != ' ')
 					Screen::pixel(w + col, h + row, ' ');
 	}
 	return *this;
@@ -89,10 +90,26 @@ bool Sprite::check_hit(Sprite &enemy) {
 void Sprite::test() { print(); Screen::display(); printf("%d %d %d %d \n", height, width, col, row);}
 
 void testImage(char ** bmp, std::pair<int,int> resolution) {
-	// system("cls");
 	for (int h = 0; h < resolution.second; h++){
 		for (int w = 0; w < resolution.first; w++) 
 			printf("%c", bmp[h][w]);
 		printf("\n");
 	}
+}
+
+image* crop(image* img) {
+	if (Screen::scale == 1) return img; 
+	image* new_img; 
+	new_img->h = img->h / Screen::scale;
+	new_img->w = img->w / Screen::scale;
+	new_img->bmp = new char*[new_img->h];
+	
+	for (int i = 0; i < new_img->h; i++) {
+		new_img->bmp[i] = new char[new_img->w]; 
+		for (int j = 0; j < new_img->w; j++)
+			new_img->bmp[i][j] = img->bmp[i][j];
+		delete[] img->bmp[i];
+	}
+	delete[] img->bmp;
+	return new_img;
 }
