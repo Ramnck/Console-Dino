@@ -6,5 +6,5 @@ make
 ```
 ## Playing
 ```sh
-Dino.exe [-h | --help to see help] [-s to print score] [-f | --fps <FPS> (default = 30)]
+Dino.exe [-h | --help to see help] [-f | --fps <FPS> (default = 60)]
 ```

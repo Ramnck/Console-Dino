@@ -3,24 +3,28 @@
 
 void Screen::init() {
 
+    Screen::console_handler = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL); 
+
+	SetConsoleActiveScreenBuffer(Screen::console_handler); // Настройка консоли
+
 	std::ios::sync_with_stdio(false);
 	setvbuf(stdout, NULL, _IONBF, 0);
 	setvbuf(stderr, NULL, _IONBF, 0);
 	setvbuf(stdin, NULL, _IONBF, 0);
 	
-	for (int i = 0; i < Screen::height; i++) {
+	// for (int i = 0; i < Screen::height; i++) {
 		// std::cout << i << '\n';
-		Screen::buffer[(i * width) + Screen::width] = '\0';
-		memset(Screen::buffer + (i * width), ' ', Screen::width);
-	}
+		Screen::buffer[Screen::width * Screen::height] = '\0';
+		// memset(Screen::buffer + (i * width), ' ', Screen::width);
+	// }
     // std::string temp_str;
     // temp_str += "mode con cols=";
     // temp_str += std::to_string(width);
     // temp_str += " ";
     // temp_str += std::to_string(height);
     // system(temp_str.c_str());
-	system("mode con cols=128 lines=64");
-	system("cls");
+	// system("mode con cols=128 lines=64");
+	// system("cls");
 }
 
 void Screen::pixel(int col, int row, char colour) {
@@ -28,7 +32,8 @@ void Screen::pixel(int col, int row, char colour) {
 }
 
 void Screen::display() {
-	puts(buffer);
+	// puts(buffer);
+    WriteConsoleOutputCharacter(Screen::console_handler, (LPCSTR) Screen::buffer, Screen::width * Screen::height + 1, { 0, 0 }, &Screen::bytes_written);
 }
 
 image* fileToArray(std::string filename) {
