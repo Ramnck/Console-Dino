@@ -6,7 +6,7 @@ void jump_handler(Sprite &dino, int keylog) {
 	if (Screen::jump_tick == 0) Screen::jump_tick = keylog;
 	else Screen::jump_tick = ((Screen::jump_tick + 1) * Screen::scale) % 62;
 
-	dino.row = std::max(std::min((int)round(0.037 * (Screen::jump_tick-31) * (Screen::jump_tick-31) - 1.5), 31), 2) / Screen::scale;
+	dino.row = std::max(std::min((int)round(0.037 * (Screen::jump_tick-31) * (Screen::jump_tick-31) - 1.5) - (dino.height - 16), 31), 2) / Screen::scale;
 }
 
 void jump_handler(Sprite &dino) {

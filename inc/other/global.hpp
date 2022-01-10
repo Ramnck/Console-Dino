@@ -9,4 +9,4 @@
 #include <cmath>
 #include <ctime>
 #include <conio.h>
-#include <windows.h>
+#include <Windows.h>

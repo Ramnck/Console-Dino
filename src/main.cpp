@@ -108,7 +108,11 @@ restart:
 	system("cls");
 	
 	// End message
-	printf("Haha you losed (Click any key to continue)\nESC to exit\n");
+	// printf("Haha you losed (Click any key to continue)\nESC to exit\n");
+
+	Sprite(0,0,fileToArray("res/endscreen.bmp"), background).print();
+	Screen::display();
+
 	if (_getch() == 27) {
 		printf("Thanks for playing");
 		return 0;
