@@ -3,6 +3,20 @@
 
 void Screen::init() {
 
+    _COORD coord;
+	coord.X = Screen::width;
+	coord.Y = Screen::height;
+	_SMALL_RECT Rect;
+	Rect.Top = 0;
+	Rect.Left = 0;
+	Rect.Bottom = Height - 1;
+	Rect.Right = Width - 1;
+	HANDLE Handle = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetWindow(width, height);
+	SetConsoleScreenBufferSize(Handle, coord);
+	SetConsoleWindowInfo(Handle, TRUE, &Rect);
+
+/*
 	std::ios::sync_with_stdio(false);
 	setvbuf(stdout, NULL, _IONBF, 0);
 	setvbuf(stderr, NULL, _IONBF, 0);
@@ -15,14 +29,17 @@ void Screen::init() {
 	}
 	system("mode con cols=129 lines=65");
 	system("cls");
+*/
 }
 
 void Screen::pixel(int col, int row, char colour) {
-	buffer[row][col] = colour;
+	buffer[(row * Screen::width) +col] = colour;
 }
 
 void Screen::display() {
-	for(int i = 0; i < Screen::height; i++) puts(buffer[i]);
+	// for(int i = 0; i < Screen::height; i++) puts(buffer[i]);
+    Screen::buffer[Screen::height * Screen::width - 1] = '\0';
+    WriteConsoleOutputCharacter(Screen::console_handler, Screen::buffer, Screen::width * Screen::height, {0, 0}, &Screen::bytes_written);
 }
 
 image* fileToArray(std::string filename) {
