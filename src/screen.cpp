@@ -1,20 +1,17 @@
 #include<2d/screen.hpp>
 #include<2d/sprite.hpp>
 
-void Screen::init() {
-
-    _COORD coord;
-	coord.X = Screen::width;
-	coord.Y = Screen::height;
-	_SMALL_RECT Rect;
-	Rect.Top = 0;
-	Rect.Left = 0;
-	Rect.Bottom = coord.Y - 1;
-	Rect.Right = coord.X - 1;
-	HANDLE Handle = GetStdHandle(STD_OUTPUT_HANDLE);
+void Screen::init(int width, int height) {
+    Screen::width = width;
+    Screen::height = height;
+    _COORD coord = {width, height};
+	_SMALL_RECT Rect = {0,0,coord.Y - 1, coord.X - 1};
+	
+    HANDLE Handle = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleScreenBufferSize(Handle, coord);
-	SetConsoleWindowInfo(Handle, TRUE, &Rect);
+    SetConsoleWindowInfo(Handle, TRUE, &Rect);
 
+	Screen::buffer = new char[height*width];
     Screen::console_handler = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL); 
 
 	SetConsoleActiveScreenBuffer(Screen::console_handler);
@@ -28,8 +25,15 @@ void Screen::pixel(int col, int row, char colour) {
 void Screen::clear() {for (int i = 0; i < Screen::width * Screen::height; i++) Screen::buffer[i] = ' ';}
 
 void Screen::display() {
-    // Screen::buffer[Screen::width * Screen::height - 1] = '\0';
+    Screen::buffer[Screen::width * Screen::height - 1] = '\0';
     WriteConsoleOutputCharacter(Screen::console_handler, (LPCSTR) Screen::buffer, Screen::width * Screen::height + 1, { 0, 0 }, &Screen::bytes_written);
+}
+
+void Screen::fill() {
+    memset(Screen::buffer, -37, Screen::width * Screen::height);
+    for(int i = 0; i < Screen::width; i++)
+        Screen::buffer[i] = (i%16) < 10 ? '0' + (i%16) : 'A' + (i%16) - 10;
+    Screen::display();
 }
 
 image* fileToArray(std::string filename) {

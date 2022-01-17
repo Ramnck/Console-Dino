@@ -89,10 +89,10 @@ bool Sprite::check_hit(Sprite &enemy) {
 
 void Sprite::test() { print(); Screen::display(); printf("%d %d %d %d \n", height, width, col, row);}
 
-void testImage(char ** bmp, std::pair<int,int> resolution) {
-	for (int h = 0; h < resolution.second; h++){
-		for (int w = 0; w < resolution.first; w++) 
-			printf("%c", bmp[h][w]);
+void testImage(image* img) {
+	for (int h = 0; h < img->h; h++){
+		for (int w = 0; w < img->w; w++) 
+			printf("%c", img->bmp[h][w]);
 		printf("\n");
 	}
 }

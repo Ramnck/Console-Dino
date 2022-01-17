@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
 
 	for(int i = 1; i < argc; i++) {
 		if ((std::string) argv[i] == "-h" ) {printf("Usage: %s [-h | --help] [-f | --fps <FPS> (default = 60)] ", argv[0]); return 0;}
-		else if ((std::string) argv[i] == "-m" || (std::string) argv[i] == "--minimize") scale = atoi(argv[i+1]);
+		// else if ((std::string) argv[i] == "-m" || (std::string) argv[i] == "--minimize") scale = atoi(argv[i+1]);
 		else if ((std::string) argv[i] == "-f" || (std::string) argv[i] == "--fps") FRQ = 1.0/atoi(argv[i+1]);
 	}
 
@@ -31,10 +31,8 @@ int main(int argc, char* argv[]) {
 	Screen::scale = scale;
 	Screen::width = width;
 	Screen::height = height;
-	char* buffer = new char[height*width + 1];
-	Screen::buffer = buffer;
-	Screen::bytes_written = height*width;
-	Screen::init();
+	Screen::bytes_written = 0;
+	Screen::init(width, height);
 
 	Sprite clouds(0, 0, fileToArray("res/clouds.bmp"), background);
 	
@@ -50,7 +48,7 @@ int main(int argc, char* argv[]) {
 	cactusk1.row = height - 1 - cactusk1.getResolution().second - gnd_img->h;
 	Sprite cactusk2(width * 1.5 + random, cactusk1.row, fileToArray("res/cactus.bmp"), enemy);
 	cactusk2.row = height - 1 - cactusk2.getResolution().second - gnd_img->h;
-
+	// testImage(fileToArray("res/run1.bmp"));
 	{
 	Sprite(0,0,fileToArray("res/startscreen.bmp"), background).print();
 	Screen::display();
@@ -89,7 +87,22 @@ restart:
 		Screen::display();
 
 		// Jump handling
-		if (_kbhit()) if (getch() == 32) button = 1; // Space
+		if (_kbhit()) {
+			char b = getch();
+			switch (b)
+			{
+			case 32:
+				button = 1;
+				break;
+			
+			case 27:
+				printf("Thanks for playing");
+				exit(1);
+				break;
+			}
+
+		}
+		
 		jump_handler(dino.clear(), button); button = 0;
 
 		// Moving cactuskes

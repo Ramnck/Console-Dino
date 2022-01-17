@@ -48,7 +48,7 @@ public:
 void jump_handler(Sprite &dino, int keylog);
 void jump_handler(Sprite &dino);
 
-void testImage(char ** bmp, std::pair<int,int> resolution);
+void testImage(image* img);
 
 image* fileToArray(std::string filename);
 

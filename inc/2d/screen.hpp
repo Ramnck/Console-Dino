@@ -16,8 +16,9 @@ public:
 
 	Screen(int _height, int _width, char _buffer);
 
+	static void fill();
 	static void clear();
-	static void init();
+	static void init(int width, int height);
 	static void display();
 	static void pixel(int col, int row, char colour);
 };

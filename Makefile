@@ -10,3 +10,5 @@ all: main
 main:
 	$(CC) $(CFLAGS) $(SRCS) -o dino
 #	$(CC) $(CFLAGS) src/2d-lib.cpp src/main.cpp -o dino
+d: 
+	$(CC) -I inc $(SRCS) -o dino
