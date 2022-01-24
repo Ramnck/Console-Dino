@@ -23,7 +23,6 @@ int main(int argc, char* argv[]) {
 
 	for(int i = 1; i < argc; i++) {
 		if ((std::string) argv[i] == "-h" ) {printf("Usage: %s [-h | --help] [-f | --fps <FPS> (default = 60)] ", argv[0]); return 0;}
-		// else if ((std::string) argv[i] == "-m" || (std::string) argv[i] == "--minimize") scale = atoi(argv[i+1]);
 		else if ((std::string) argv[i] == "-f" || (std::string) argv[i] == "--fps") FRQ = 1.0/atoi(argv[i+1]);
 	}
 
@@ -88,8 +87,7 @@ restart:
 
 		// Jump handling
 		if (_kbhit()) {
-			char b = getch();
-			switch (b)
+			switch (getch())
 			{
 			case 32:
 				button = 1;
@@ -120,10 +118,6 @@ restart:
 	cactusk2.col = Screen::width + random + (Screen::width / 2);
 	jump_handler(dino, RESET);
 	tick = 1;
-	// system("cls");
-	
-	// End message
-	// printf("Haha you losed (Click any key to continue)\nESC to exit\n");
 	{
 	Sprite(0,0,fileToArray("res/endscreen.bmp"), background).print();
 	Screen::display();

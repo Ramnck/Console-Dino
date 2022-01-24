@@ -1,28 +1,37 @@
 #include<2d/screen.hpp>
 #include<2d/sprite.hpp>
 
+void setConsole(int width, int height) {
+    std::string text = "mode con cols=";
+    text += std::to_string(width);
+    text += " lines=";
+    text += std::to_string(height);
+    system(text.c_str());
+}
+
 void Screen::init(int width, int height) {
     Screen::width = width;
     Screen::height = height;
-    _COORD coord = {width, height};
-	_SMALL_RECT Rect = {0,0,coord.Y - 1, coord.X - 1};
+    _COORD coord = {height, width};
+    _SMALL_RECT Rect = {0,0,coord.X - 1, coord.Y - 1};
 	
-    HANDLE Handle = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleScreenBufferSize(Handle, coord);
-    SetConsoleWindowInfo(Handle, TRUE, &Rect);
+    setConsole(width, height);
 
+    HANDLE Handle = GetStdHandle(STD_OUTPUT_HANDLE);
 	Screen::buffer = new char[height*width];
     Screen::console_handler = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL); 
 
 	SetConsoleActiveScreenBuffer(Screen::console_handler);
-
+    SetConsoleWindowInfo(Handle, TRUE, &Rect);
+    SetConsoleScreenBufferSize(Handle, coord);
+    Screen::clear();
 }
 
 void Screen::pixel(int col, int row, char colour) {
 	buffer[(row * width) + col] = colour;
 }
 
-void Screen::clear() {for (int i = 0; i < Screen::width * Screen::height; i++) Screen::buffer[i] = ' ';}
+void Screen::clear() { memset(Screen::buffer, ' ', Screen::height * Screen::width); }
 
 void Screen::display() {
     Screen::buffer[Screen::width * Screen::height - 1] = '\0';

@@ -1,14 +1,10 @@
 CC=g++
-ifeq ($(OS),Windows_NT)
-	SRCS=$(shell dir /b /s *.cpp)
-else
-	SRCS=$(shell find . -name "*.cpp")
-endif
-CFLAGS=-O2 -s -g0 -I inc
+SRCS=$(shell dir /b /s *.cpp)
+CFLAGS=-s -g0 -DNDEBUG -w -I inc
+
 all: main
 
 main:
-	$(CC) $(CFLAGS) $(SRCS) -o dino
-#	$(CC) $(CFLAGS) src/2d-lib.cpp src/main.cpp -o dino
+	$(CC) $(CFLAGS) $(SRCS) -o bin/dino
 d: 
 	$(CC) -I inc $(SRCS) -o dino
